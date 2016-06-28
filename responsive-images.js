@@ -5,9 +5,7 @@
  */
 (function responsiveImages() {
 
-    var that = this,
-        sizes = [100, 300, 600, 900, 1200, 1600, 1800],
-        largestSize = 1800,
+    var sizes = [100, 300, 600, 900, 1200, 1600, 1800],
         
         // This attributed is populated with the image's existing widths. e.g. "50 70 90" It allows 
         // JavaScript to know if the required size for the image has been generated or not. If it 
@@ -36,7 +34,7 @@
             var image = responsiveImages[a],
                 src = image.getAttribute(responsiveAttr),
                 newSrc = false,
-                closestWidth = largestSize,
+                closestWidth = false,
                 imgWidth = 0;
                 
             // Check if the element has a width attribute.
@@ -71,35 +69,35 @@
                 }
             }
             
-            // If the image's full size has been detected as zero it's likely that
+            // If the image's full size hasn't been detected then it's likely that
             // the image isn't visible, such as an image in a hidden carousel slide.
             if (
-                closestWidth == 0
+                !closestWidth
                 && image.offsetParent === null // Double checks that the image isn't visible.
             ) {
-                // do nothing
-                
-            } else {
-                var array = src.split('/'),
-                    fileName = array.pop();
-                    
-                array.push(closestWidth + 'x');
-                array.push(fileName);
-                newSrc = array.join('/');
-                
-                // Prevents additional calls to responsiveImages from multiple applications
-                image.removeAttribute(responsiveAttr);
-                image.removeAttribute('style'); // Removes top padding
-                image.setAttribute('src', newSrc);
-                
-                // Remove width & height attributes
-                if (image.style.width) {
-                    image.style.width = '';
-                }
-                if (image.style.height) {
-                    image.style.height = '';
-                }
+                continue;
             }
+            
+            var array = src.split('/'),
+                fileName = array.pop();
+                
+            array.push(closestWidth + 'x');
+            array.push(fileName);
+            newSrc = array.join('/');
+            
+            // Prevents additional calls to responsiveImages from multiple applications
+            image.removeAttribute(responsiveAttr);
+            image.removeAttribute('style'); // Removes top padding
+            image.setAttribute('src', newSrc);
+            
+            // Remove width & height attributes
+            if (image.style.width) {
+                image.style.width = '';
+            }
+            if (image.style.height) {
+                image.style.height = '';
+            }
+            
         }
     }
     
